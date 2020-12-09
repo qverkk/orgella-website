@@ -2,9 +2,20 @@
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
-    "test": "echo \"This template does not include a test runner by default.\" && exit 1"
+    "test": "echo \"This template does not include a test runner by default.\" && exit 1",
+    "nstart": "next start",
+    "nbuild": "next build",
+    "ndev": "next dev"
   },
   "devDependencies": {
+    "@snowpack/plugin-react-refresh": "^2.3.8",
+    "eslint": "^7.15.0",
+    "eslint-plugin-react": "^7.21.5",
     "snowpack": "^2.18.2"
+  },
+  "dependencies": {
+    "next": "^10.0.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }
