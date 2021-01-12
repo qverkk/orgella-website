@@ -1,16 +1,14 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import LoggedInProfile from "./loggedin/profile-in";
 import LoggedOutProfile from "./loggedout/profile-out";
 
 export default function ProfileMenu() {
+  const router = useRouter();
   const [loggedin, setLoggedin] = useState(false);
 
-  function login() {
-    setLoggedin(true);
-  }
-
   function logout() {
-    setLoggedin(false);
+    router.push("/");
   }
 
   return (
@@ -18,7 +16,7 @@ export default function ProfileMenu() {
       {loggedin ? (
         <LoggedInProfile logout={() => logout()} />
       ) : (
-        <LoggedOutProfile login={() => login()} />
+        <LoggedOutProfile />
       )}
     </>
   );

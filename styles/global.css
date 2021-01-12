@@ -6,20 +6,19 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 1.6;
   font-size: 18px;
-  background-color: #eceff1;
 }
 
 * {
   box-sizing: border-box;
 }
 
-a {
+.link_text {
   color: #0070f3;
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
+.link_text:hover {
+  color: cadetblue;
 }
 
 img {

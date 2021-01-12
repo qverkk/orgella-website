@@ -24,7 +24,6 @@ export default function Layout({ children, home }) {
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <main>{children}</main>
-        <button>Back to the top</button>
       </div>
     </>
   );

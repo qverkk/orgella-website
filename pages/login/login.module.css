@@ -1,0 +1,29 @@
+.heading {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.login_border {
+  margin-top: 1rem;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+}
+
+.action_border_register {
+  display: inline-block;
+}
+
+.action_border_login {
+  display: inline-block;
+  padding-left: 10rem;
+}
+
+.register_text {
+  font-size: 18px;
+}
+
+.login_button {
+  width: 12rem;
+}
