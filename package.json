@@ -1,4 +1,7 @@
 {
+  "name": "orgella",
+  "version": "0.0.1",
+  "proxy": "http://www.google.com",
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
@@ -17,7 +20,9 @@
     "@chakra-ui/react": "1.1.2",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
+    "axios": "^0.21.1",
     "framer-motion": "^3.2.0",
+    "jsonwebtoken": "^8.5.1",
     "next": "^10.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"

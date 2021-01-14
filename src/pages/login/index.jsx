@@ -8,9 +8,22 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
+import { axios } from "../../apis/calls";
 import Navbar from "../../components/navbar/navbar";
 
 export default function Login() {
+  const clickTest = async () => {
+    const response = await axios({
+      method: "GET",
+      url: "",
+      headers: {
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+    console.log(response.data);
+  };
+
   return (
     <>
       <Navbar loginOrRegister />
@@ -35,6 +48,7 @@ export default function Login() {
                 width="200px"
                 backgroundColor="green.500"
                 ml="5"
+                onClick={clickTest}
               >
                 Zaloguj się
               </Button>

@@ -1,4 +1,3 @@
-import "../styles/global.css";
 import { ChakraProvider, ColorModeScript, CSSReset } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 
