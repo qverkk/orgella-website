@@ -1,7 +1,5 @@
+import { Box } from "@chakra-ui/react";
 import Head from "next/head";
-import styles from "./layout.module.css";
-import utilStyles from "../styles/utils.module.css";
-import Link from "next/link";
 import Navbar from "./navbar/navbar";
 
 export const siteTitle = "Orgella";
@@ -10,7 +8,7 @@ export default function Layout({ children, home }) {
   return (
     <>
       <Navbar />
-      <div className={styles.container}>
+      <Box>
         <Head>
           <link rel="icon" href="/favicon.ico" />
           <meta name="description" content="Orgella, a clone of Allegro" />
@@ -24,7 +22,7 @@ export default function Layout({ children, home }) {
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <main>{children}</main>
-      </div>
+      </Box>
     </>
   );
 }
