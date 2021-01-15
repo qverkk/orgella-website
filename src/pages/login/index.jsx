@@ -9,12 +9,14 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { loginUser } from "../../apis/services/userServiceWorker";
 import Navbar from "../../components/navbar/navbar";
 
 export default function Login() {
   const toast = useToast();
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const clickTest = async () => {
@@ -49,6 +51,10 @@ export default function Login() {
       }
     });
     console.log(response);
+  };
+
+  const forwardToRegisterPage = () => {
+    router.push("/register");
   };
 
   return (
@@ -96,7 +102,10 @@ export default function Login() {
       <Box borderWidth="1px" borderRadius="1g" overflow="hidden" p="6" m="5">
         <Box>
           <Heading size="l">
-            Nie masz konta? <Link color="teal.500">Zarejestruj się</Link>
+            Nie masz konta?{" "}
+            <Link color="teal.500" onClick={forwardToRegisterPage}>
+              Zarejestruj się
+            </Link>
           </Heading>
         </Box>
       </Box>
