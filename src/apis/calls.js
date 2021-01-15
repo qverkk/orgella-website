@@ -5,7 +5,11 @@ const usersApi = axios.create({
 });
 
 usersApi.interceptors.request.use(function (config) {
-  if (config.url.endsWith("/login") || config.url.endsWith("/register")) {
+  if (
+    config.url.endsWith("/users/login") ||
+    (config.url.endsWith("/users") && config.method === "post")
+  ) {
+    console.log("No token");
     return config;
   }
 
