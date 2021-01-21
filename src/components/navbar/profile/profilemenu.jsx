@@ -1,19 +1,20 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { authStore } from "../../../store/zustand";
 import LoggedInProfile from "./loggedin/profile-in";
 import LoggedOutProfile from "./loggedout/profile-out";
 
 export default function ProfileMenu() {
   const router = useRouter();
-  const [loggedin, setLoggedin] = useState(false);
 
   function logout() {
     router.push("/");
   }
 
+  const authenticated = authStore((store) => store.authenticated);
+
   return (
     <>
-      {loggedin ? (
+      {authenticated ? (
         <LoggedInProfile logout={() => logout()} />
       ) : (
         <LoggedOutProfile />

@@ -11,19 +11,25 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { loginUser } from "../../apis/services/userServiceWorker";
+import {
+  getUserDetails,
+  loginUser,
+} from "../../apis/services/userServiceWorker";
 import Navbar from "../../components/navbar/navbar";
+import { authStore } from "../../store/zustand";
 
 export default function Login() {
   const toast = useToast();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const authenticate = authStore((store) => store.authenticate);
   const clickTest = async () => {
     const response = loginUser(username, password, (result) => {
       const { status, data } = result;
       if (status == 200) {
         console.log(data);
+        authenticate();
         toast({
           position: "bottom-left",
           title: "Welcome back!.",
@@ -32,6 +38,7 @@ export default function Login() {
           duration: 9000,
           isClosable: true,
         });
+        getUserDetails();
       } else if (status == 403) {
         toast({
           title: "An error occurred.",

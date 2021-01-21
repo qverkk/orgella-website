@@ -87,21 +87,21 @@ export default function Navbar(props, { searchQuery }) {
                 onChange={(e) => setCategory(e.target.value)}
                 width={{ base: "50%", md: "230px", lg: "230px" }}
               >
-                <option value="wszystko">Wszystkie kategorie</option>
+                <option value="Wszystko">Wszystkie kategorie</option>
                 <optgroup label="Kategorie">
-                  <option value="dom-i-ogrod">Dom i ogród</option>
-                  <option value="dziecko">Dziecko</option>
-                  <option value="elektronika">Elektronika</option>
-                  <option value="firma">Firma i usługi</option>
-                  <option value="kolekcje-i-sztuka">Kolekcje i sztuka</option>
-                  <option value="kultura-i-rozrywka">Kultura i rozrywka</option>
-                  <option value="moda">Moda</option>
-                  <option value="motoryzacja">Motoryzacja</option>
-                  <option value="nieruchomosci">Nieruchomości</option>
-                  <option value="sport-i-turystyka">Sport i turystyka</option>
-                  <option value="supermarket">Supermarket</option>
-                  <option value="uroda">Uroda</option>
-                  <option value="zdrowie">Zdrowie</option>
+                  <option value="Dom-i-ogrod">Dom i ogród</option>
+                  <option value="Dziecko">Dziecko</option>
+                  <option value="Elektronika">Elektronika</option>
+                  <option value="Firma">Firma i usługi</option>
+                  <option value="Kolekcje-i-sztuka">Kolekcje i sztuka</option>
+                  <option value="Kultura-i-rozrywka">Kultura i rozrywka</option>
+                  <option value="Moda">Moda</option>
+                  <option value="Motoryzacja">Motoryzacja</option>
+                  <option value="Nieruchomosci">Nieruchomości</option>
+                  <option value="Sport-i-turystyka">Sport i turystyka</option>
+                  <option value="Supermarket">Supermarket</option>
+                  <option value="Uroda">Uroda</option>
+                  <option value="Zdrowie">Zdrowie</option>
                 </optgroup>
               </Select>
               <Button

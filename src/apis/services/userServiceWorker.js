@@ -68,3 +68,16 @@ export const registerUser = async (
   console.log(response);
   callback({ status: response.status, data: response.data });
 };
+
+export const getUserDetails = async () => {
+  const response = await usersApi({
+    method: "GET",
+    url: "/users/qverkk",
+    validateStatus: () => true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+
+  console.log(response);
+};
