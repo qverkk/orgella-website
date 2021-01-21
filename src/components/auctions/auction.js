@@ -2,9 +2,10 @@ import { Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 export default function Auction({ data }) {
+  const router = useRouter();
+
   const showDetailedPage = () => {
-    const router = useRouter();
-    router.push("/auction/{data.auctionPath}");
+    router.push("/auction/" + data.auctionPath);
   };
 
   return (
