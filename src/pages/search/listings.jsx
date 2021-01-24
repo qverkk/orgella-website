@@ -40,10 +40,15 @@ export default function Listings() {
             w="100%"
           />
         )}
-        {auctions &&
+        {auctions && auctions.length > 0 ? (
           auctions.map((auction) => (
             <Auction w="100%" key={auction.auctionPath} data={auction} />
-          ))}
+          ))
+        ) : (
+          <Heading>
+            Brak aukcji dla {query} w kategorii {category}
+          </Heading>
+        )}
       </Box>
     </>
   );
