@@ -17,23 +17,27 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { React, useState } from "react";
+import Basket from "../basket/basket";
 import ProfileMenu from "./profile/profilemenu";
 
 const preventDefault = (f) => (e) => {
-  e.preventDefault();
+  if (e != undefined) {
+    e.preventDefault();
+  }
   f(e);
 };
 
-export default function Navbar(props, { searchQuery }) {
+export default function Navbar(props) {
   const router = useRouter();
 
   const loginOrRegister = props.loginOrRegister;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("wszystko");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [displayProfile, setDisplayProfile] = useState(true);
   const [placement, setPlacement] = useState("right");
 
-  const test = preventDefault(() => {
+  const performSearch = preventDefault(() => {
     router.push({
       pathname: "/search/listings",
       query: {
@@ -77,6 +81,11 @@ export default function Navbar(props, { searchQuery }) {
                   placeholder="Czego szukasz?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      performSearch();
+                    }
+                  }}
                   autoComplete="off"
                 />
               </FormControl>
@@ -107,7 +116,7 @@ export default function Navbar(props, { searchQuery }) {
               <Button
                 type="submit"
                 colorScheme="green"
-                onClick={test}
+                onClick={performSearch}
                 width={{ base: "50%", md: "100px", lg: "100px" }}
               >
                 SZUKAJ
@@ -117,18 +126,35 @@ export default function Navbar(props, { searchQuery }) {
           <Spacer />
           <Box>
             <Box w="150px">
-              <Button onClick={onOpen} w="100%">
-                Profile
+              <Button
+                onClick={() => {
+                  setDisplayProfile(false);
+                  onOpen();
+                }}
+                w="100%"
+              >
+                Koszyk
+              </Button>
+            </Box>
+            <Box w="150px">
+              <Button
+                onClick={() => {
+                  setDisplayProfile(true);
+                  onOpen();
+                }}
+                w="100%"
+              >
+                Profil
               </Button>
             </Box>
             <Drawer placement={placement} onClose={onClose} isOpen={isOpen}>
               <DrawerOverlay>
                 <DrawerContent>
                   <DrawerHeader borderBottomWidth={1}>
-                    Menu profilu
+                    {displayProfile ? "Menu profilu" : "Koszyk"}
                   </DrawerHeader>
                   <DrawerBody>
-                    <ProfileMenu />
+                    {displayProfile ? <ProfileMenu /> : <Basket />}
                   </DrawerBody>
                 </DrawerContent>
               </DrawerOverlay>

@@ -1,70 +1,28 @@
 import {
   Box,
   Button,
-  Flex,
   Heading,
-  HStack,
   Image,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
   Stack,
   Text,
-  useNumberInput,
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAuctionDetails } from "../../apis/services/auctionServiceWorker";
 import Navbar from "../../components/navbar/navbar";
+import SliderInput from "../../components/utils/sliderinput";
+import { cartStore } from "../../store/zustand";
 
 export default function AuctionDetails() {
   const router = useRouter();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
+  const [amount, setAmount] = useState(0);
   const { path } = router.query;
-
-  const SliderInput = () => {
-    const [value, setValue] = useState(0);
-    const handleChange = (value) => setValue(value);
-
-    return (
-      <Flex>
-        <NumberInput
-          maxW="100px"
-          mr="2rem"
-          value={value}
-          onChange={handleChange}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        <Slider
-          flex="1"
-          w={300}
-          value={value}
-          onChange={handleChange}
-          max={details.quantity}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb fontSize="sm" boxSize="32px" children={value} />
-        </Slider>
-      </Flex>
-    );
-  };
+  const addItem = cartStore((state) => state.addItem);
+  const getItems = cartStore((state) => state.items);
 
   useEffect(() => {
     if (path) {
@@ -79,6 +37,21 @@ export default function AuctionDetails() {
       });
     }
   }, [path]);
+
+  const updateAmount = (value) => {
+    setAmount(value);
+  };
+
+  const addToCart = () => {
+    console.log(amount);
+    if (amount > 0) {
+      addItem({
+        amount: amount,
+        product: details,
+      });
+    }
+    console.log(getItems);
+  };
 
   return (
     <>
@@ -113,9 +86,16 @@ export default function AuctionDetails() {
                   <Stack h="100%" justify="end">
                     <VStack boxShadow="outline" p={3}>
                       <Text>Liczba sztuk</Text>
-                      <SliderInput />
+                      <SliderInput
+                        details={details}
+                        callback={(value) => {
+                          updateAmount(value);
+                        }}
+                      />
                     </VStack>
-                    <Button colorScheme="teal">Dodaj do koszyka</Button>
+                    <Button colorScheme="teal" onClick={addToCart}>
+                      Dodaj do koszyka
+                    </Button>
                     <Button colorScheme="teal">Kup teraz</Button>
                   </Stack>
                 </Stack>
