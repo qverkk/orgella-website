@@ -32,7 +32,7 @@ export default function Navbar(props) {
 
   const loginOrRegister = props.loginOrRegister;
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("wszystko");
+  const [category, setCategory] = useState("Wszystkie");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [displayProfile, setDisplayProfile] = useState(true);
   const [placement, setPlacement] = useState("right");
@@ -96,7 +96,7 @@ export default function Navbar(props) {
                 onChange={(e) => setCategory(e.target.value)}
                 width={{ base: "50%", md: "230px", lg: "230px" }}
               >
-                <option value="Wszystko">Wszystkie kategorie</option>
+                <option value="Wszystkie">Wszystkie kategorie</option>
                 <optgroup label="Kategorie">
                   <option value="Dom-i-ogrod">Dom i ogród</option>
                   <option value="Dziecko">Dziecko</option>
