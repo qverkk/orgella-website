@@ -3,8 +3,17 @@ import create from "zustand";
 export const authStore = create((set) => ({
   authenticated: false,
   roles: [],
+  userDetails: null,
+  setUserDetails: (details) => set(() => ({ userDetails: details })),
   authenticate: () => set((state) => ({ authenticated: true })),
   updateRoles: (roles) => set((state) => ({ roles: roles })),
+  logout: () => {
+    set((state) => ({
+      authenticated: false,
+      userDetails: null,
+      rules: [],
+    }));
+  },
 }));
 
 export const cartStore = create((set, get) => ({

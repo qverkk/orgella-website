@@ -7,9 +7,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { cartStore } from "../../store/zustand";
 
 export default function Basket() {
+  const router = useRouter();
   const items = cartStore((state) => state.items);
   const removeItem = cartStore((state) => state.removeProductByAuctionPath);
 
@@ -22,7 +24,15 @@ export default function Basket() {
           boxSize="50px"
         />
         <VStack pl={5} align="left">
-          <Text>{item.product.title}</Text>
+          <Text
+            onClick={() => {
+              router.push({
+                pathname: "/auction/" + item.product.auctionPath,
+              });
+            }}
+          >
+            {item.product.title}
+          </Text>
           <Text>
             {item.amount}x {item.product.price} zł
           </Text>

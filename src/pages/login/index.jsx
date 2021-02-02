@@ -24,7 +24,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const authenticate = authStore((store) => store.authenticate);
-  const clickTest = async () => {
+  const performLogin = async () => {
     const response = loginUser(username, password, (result) => {
       const { status, data } = result;
       if (status == 200) {
@@ -38,7 +38,7 @@ export default function Login() {
           duration: 9000,
           isClosable: true,
         });
-        getUserDetails();
+        router.push("/");
       } else if (status == 403) {
         toast({
           title: "An error occurred.",
@@ -89,6 +89,11 @@ export default function Login() {
                 placeholder="Hasło"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    performLogin();
+                  }
+                }}
               />
             </FormControl>
             <Box mt="5">
@@ -98,7 +103,7 @@ export default function Login() {
                 width="200px"
                 backgroundColor="green.500"
                 ml="5"
-                onClick={clickTest}
+                onClick={performLogin}
               >
                 Zaloguj się
               </Button>

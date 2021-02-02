@@ -1,7 +1,5 @@
 import { ChakraProvider, ColorModeScript, CSSReset } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
-import cookie from "cookie";
-import { authStore } from "../store/zustand";
 
 const config = {
   initialColorMode: "dark",
@@ -19,13 +17,25 @@ export default function App({ Component, pageProps }) {
   );
 }
 
-export async function getStaticProps(context) {
-  const request = context.req;
-  if (request) {
-    var cookies = cookie.parse(request.headers.cookie || "");
-    if (!!cookies["UserInfo"]) {
-      const { authenticate } = authStore();
-      authenticate();
-    }
-  }
-}
+// export async function getServerSideProps(context) {
+//   const request = context.req;
+//   if (request) {
+//     var cookies = cookie.parse(request.headers.cookie || "");
+//     if (!!cookies["UserInfo"]) {
+//       var decoded = jwt.decode(cookies["UserInfo"], { complete: true });
+//       return {
+//         props: {
+//           authenticated: true,
+//           userId: decoded.payload,
+//         },
+//       };
+//     }
+//   }
+
+//   return {
+//     props: {
+//       authenticated: false,
+//       token: null,
+//     },
+//   };
+// }
