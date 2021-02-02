@@ -10,6 +10,11 @@ const auctionsApi = axios.create({
   withCredentials: true,
 });
 
+const basketApi = axios.create({
+  baseURL: "/api/users-basket-ws",
+  withCredentials: true,
+});
+
 // usersApi.interceptors.request.use(function (config) {
 //   if (
 //     config.url.endsWith("/users/login") ||
@@ -24,4 +29,4 @@ const auctionsApi = axios.create({
 //   return config;
 // });
 
-export { usersApi, auctionsApi };
+export { usersApi, auctionsApi, basketApi };

@@ -8,12 +8,15 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { cartStore } from "../../store/zustand";
+import { getUserBasket } from "../../apis/services/basketServiceWorker";
+import { authStore, cartStore } from "../../store/zustand";
 
 export default function Basket() {
   const router = useRouter();
   const items = cartStore((state) => state.items);
   const removeItem = cartStore((state) => state.removeProductByAuctionPath);
+  const userDetails = authStore((state) => state.userDetails);
+  const basket = getUserBasket(userDetails.userId);
 
   const itemsList = items.map((item) => (
     <Box key={item.product.auctionPath} boxShadow="dark-lg" p={5} mt={3}>
