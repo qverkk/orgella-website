@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { authStore } from "../../store/zustand";
 import { usersApi } from "../calls";
 
@@ -41,13 +42,15 @@ function formatDate(date) {
 }
 
 export const fetchUser = async () => {
-  const userDetails = authStore((state) => state.userDetails);
-  const setUserDetails = authStore((state) => state.setUserDetails);
-  const authenticate = authStore((state) => state.authenticate);
+  // const userDetails = authStore((state) => state.userDetails);
+  // const setUserDetails = authStore((state) => state.setUserDetails);
+  // const authenticate = authStore((state) => state.authenticate);
+  // const authenticated = authStore((state) => state.authenticated);
+  // const logout = authStore((state) => state.logout);
 
-  if (userDetails) {
-    return userDetails;
-  }
+  // if (userDetails) {
+  //   return { userDetails, authenticated };
+  // }
 
   const response = await usersApi({
     method: "GET",
@@ -60,24 +63,30 @@ export const fetchUser = async () => {
   });
 
   if (response.status != 200) {
-    return null;
+    return {
+      error: "Not logged in",
+      authenticated: false,
+      userDetails: null,
+    };
   }
 
-  authenticate();
-  setUserDetails(response.data);
-  return userDetails;
+  return { userDetails: response.data, authenticated: true };
 };
 
 export function useFetchUser({ required } = {}) {
   const userDetails = authStore((state) => state.userDetails);
+  const setUserDetails = authStore((state) => state.setUserDetails);
+  const authenticate = authStore((state) => state.authenticate);
+  const logout = authStore((state) => state.logout);
+
   const router = useRouter();
   const [loading, setLoading] = useState(() => !userDetails);
-  const [user, setUser] = useState(() => {
+  const [result, setResult] = useState(() => {
     return userDetails || null;
   });
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && result) {
       return;
     }
     setLoading(true);
@@ -89,7 +98,15 @@ export function useFetchUser({ required } = {}) {
           router.push("/login");
           return;
         }
-        setUser(user);
+        if (!user.error) {
+          setResult(user);
+          setUserDetails(user);
+          authenticate();
+        } else {
+          return {
+            error,
+          };
+        }
         setLoading(false);
       }
     });
@@ -99,7 +116,7 @@ export function useFetchUser({ required } = {}) {
     };
   }, []);
 
-  return { user, loading };
+  return { result, loading };
 }
 
 export const registerUser = async (
@@ -141,8 +158,6 @@ export const getUserDetails = async () => {
       "Access-Control-Allow-Origin": "*",
     },
   });
-
-  console.log(response);
 };
 
 export const logoutUser = async (logout) => {

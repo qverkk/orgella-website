@@ -1,60 +1,93 @@
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { getUserBasket } from "../../apis/services/basketServiceWorker";
-import { authStore, cartStore } from "../../store/zustand";
+import { useEffect } from "react";
+import useSWR from "swr";
+import {
+  deleteBasketItemForUser,
+  getUserBasket,
+} from "../../apis/services/basketServiceWorker";
+import { fetchUser } from "../../apis/services/userServiceWorker";
+import { authStore } from "../../store/zustand";
+import LoggedOutProfile from "../navbar/profile/loggedout/profile-out";
 
 export default function Basket() {
   const router = useRouter();
-  const items = cartStore((state) => state.items);
-  const removeItem = cartStore((state) => state.removeProductByAuctionPath);
+  const setUserDetails = authStore((state) => state.setUserDetails);
   const userDetails = authStore((state) => state.userDetails);
-  const basket = getUserBasket(userDetails.userId);
+  const logout = authStore((state) => state.logout);
+  const authenticated = authStore((state) => state.authenticated);
 
-  const itemsList = items.map((item) => (
-    <Box key={item.product.auctionPath} boxShadow="dark-lg" p={5} mt={3}>
-      <HStack>
-        <Image
-          alt="{item.product.title} image"
-          src={`data:image/png;base64,${item.product.thumbnail}`}
-          boxSize="50px"
-        />
-        <VStack pl={5} align="left">
-          <Text
-            onClick={() => {
-              router.push({
-                pathname: "/auction/" + item.product.auctionPath,
-              });
+  const { data, error, mutate } = useSWR(
+    userDetails ? "/api/users-basket-ws/basket/" + userDetails.userId : null,
+    getUserBasket(userDetails ? userDetails.userId : null),
+    {
+      refreshInterval: 10000,
+    }
+  );
+
+  useEffect(() => {
+    if (!userDetails) {
+      fetchUser().then((result) => {
+        if (result.error) {
+          logout();
+        } else {
+          setUserDetails(result.userDetails);
+        }
+      });
+    }
+  }, []);
+
+  if (!userDetails || !authenticated) {
+    return <LoggedOutProfile />;
+  }
+
+  if (error)
+    return <div>Błąd podczas ładowania koszyka, spróbuj ponownie.</div>;
+  if (!data || !data.products) return <div>Ładuję...</div>;
+
+  const itemsList = data.products
+    ? data.products.map((item) => (
+        <Box key={item.product.auctionPath} boxShadow="dark-lg" p={5} mt={3}>
+          <HStack>
+            <Image
+              alt="{item.product.title} image"
+              src={`data:image/png;base64,${item.product.thumbnail}`}
+              boxSize="50px"
+            />
+            <VStack pl={5} align="left">
+              <Text
+                onClick={() => {
+                  router.push({
+                    pathname: "/auction/" + item.product.auctionPath,
+                  });
+                }}
+              >
+                {item.product.title}
+              </Text>
+              <Text>
+                {item.amount}x {item.product.price} zł
+              </Text>
+            </VStack>
+          </HStack>
+          <Button
+            colorScheme="red"
+            w="100%"
+            mt={2}
+            onClick={async () => {
+              deleteBasketItemForUser(
+                item.product.auctionPath,
+                userDetails.userId
+              );
+              mutate("/api/users-basket-ws/basket/" + userDetails.userId);
             }}
           >
-            {item.product.title}
-          </Text>
-          <Text>
-            {item.amount}x {item.product.price} zł
-          </Text>
-        </VStack>
-      </HStack>
-      <Button
-        colorScheme="red"
-        w="100%"
-        mt={2}
-        onClick={() => {
-          removeItem(item.product.auctionPath);
-        }}
-      >
-        Usuń
-      </Button>
-    </Box>
-  ));
+            Usuń
+          </Button>
+        </Box>
+      ))
+    : "No data";
 
-  const totalSum = items.reduce(
+  const totalSum = data.products.reduce(
     (a, v) => (a = a + v.product.price * v.amount),
     0
   );

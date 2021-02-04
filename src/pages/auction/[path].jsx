@@ -12,8 +12,6 @@ import { useEffect, useState } from "react";
 import { getAuctionDetails } from "../../apis/services/auctionServiceWorker";
 import Navbar from "../../components/navbar/navbar";
 import SliderInput from "../../components/utils/sliderinput";
-import { cartStore } from "../../store/zustand";
-
 export default function AuctionDetails() {
   const router = useRouter();
   const [error, setError] = useState();
@@ -21,8 +19,6 @@ export default function AuctionDetails() {
   const [details, setDetails] = useState();
   const [amount, setAmount] = useState(0);
   const { path } = router.query;
-  const addItem = cartStore((state) => state.addItem);
-  const getItems = cartStore((state) => state.items);
 
   useEffect(() => {
     if (path) {
@@ -43,14 +39,12 @@ export default function AuctionDetails() {
   };
 
   const addToCart = () => {
-    console.log(amount);
     if (amount > 0) {
       addItem({
         amount: amount,
         product: details,
       });
     }
-    console.log(getItems);
   };
 
   return (

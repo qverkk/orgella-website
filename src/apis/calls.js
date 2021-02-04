@@ -15,18 +15,4 @@ const basketApi = axios.create({
   withCredentials: true,
 });
 
-// usersApi.interceptors.request.use(function (config) {
-//   if (
-//     config.url.endsWith("/users/login") ||
-//     (config.url.endsWith("/users") && config.method === "post")
-//   ) {
-//     console.log("No token");
-//     return config;
-//   }
-
-//   const token = localStorage.token;
-//   config.headers.authorization = `Bearer ${token}`;
-//   return config;
-// });
-
 export { usersApi, auctionsApi, basketApi };

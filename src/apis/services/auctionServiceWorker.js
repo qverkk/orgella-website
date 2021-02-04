@@ -22,17 +22,12 @@ export const getAuctionDetails = async (auctionPath, callback) => {
   const response = await auctionsApi({
     method: "GET",
     url: "/auctions/details/" + auctionPath,
-    // params: {
-    //   auctionPath,
-    // },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
     },
     validateStatus: () => true,
   });
-
-  console.log(response);
 
   callback({ data: response.data, status: response.status });
 };

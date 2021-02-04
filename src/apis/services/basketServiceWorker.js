@@ -1,7 +1,11 @@
 import { basketApi } from "../calls";
 
-export const getUserBasket = async (userid) => {
-  const response = await basketApi({
+export const getUserBasket = (userid) => {
+  if (userid == null) {
+    return [];
+  }
+
+  basketApi({
     method: "GET",
     url: "/basket/" + userid,
     headers: {
@@ -9,12 +13,23 @@ export const getUserBasket = async (userid) => {
       "Content-Type": "application/json",
     },
     validateStatus: () => true,
+  }).then((res) => {
+    if (res.status != 200) {
+      return [];
+    }
+
+    return res.data.products;
   });
+};
 
-  if (response.status != 200) {
-    return null;
-  }
-
-  console.log(response.data);
-  return response.data.products;
+export const deleteBasketItemForUser = (basketItemPath, userId) => {
+  basketApi({
+    method: "DELETE",
+    url: "/basket/" + userId + "/" + basketItemPath,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  });
 };

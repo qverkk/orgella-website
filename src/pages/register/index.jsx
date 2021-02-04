@@ -115,7 +115,6 @@ export default function Registration() {
                 (result) => {
                   const { status, data } = result;
                   if (status == 201) {
-                    console.log(data);
                     toast({
                       position: "bottom-left",
                       title: "YAAAAAY!.",

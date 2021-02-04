@@ -28,7 +28,6 @@ export default function Login() {
     const response = loginUser(username, password, (result) => {
       const { status, data } = result;
       if (status == 200) {
-        console.log(data);
         authenticate();
         toast({
           position: "bottom-left",
@@ -57,7 +56,6 @@ export default function Login() {
         });
       }
     });
-    console.log(response);
   };
 
   const forwardToRegisterPage = () => {
