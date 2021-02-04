@@ -40,26 +40,16 @@ export default function Listings() {
             w="100%"
           />
         )}
-        {auctions && auctions.length > 0 ? (
-          auctions.map((auction) => (
-            <Auction w="100%" key={auction.auctionPath} data={auction} />
-          ))
-        ) : (
-          <Heading>
-            Brak aukcji dla {query} w kategorii {category}
-          </Heading>
-        )}
+        {auctions && auctions.length > 0
+          ? auctions.map((auction) => (
+              <Auction w="100%" key={auction.auctionPath} data={auction} />
+            ))
+          : !error && (
+              <Heading>
+                Brak aukcji dla {query} w kategorii {category}
+              </Heading>
+            )}
       </Box>
     </>
   );
 }
-
-// export async function getServerSideProps({ req, res }) {
-
-//   findAuctions()
-//   return {
-//     props: {
-//       auctions,
-//     },
-//   };
-// }

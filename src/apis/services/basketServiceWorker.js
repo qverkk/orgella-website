@@ -1,13 +1,13 @@
 import { basketApi } from "../calls";
 
-export const getUserBasket = (userid) => {
-  if (userid == null) {
+export const getUserBasket = (userId) => {
+  if (userId == null) {
     return [];
   }
 
   basketApi({
     method: "GET",
-    url: "/basket/" + userid,
+    url: `/basket/${userId}`,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
@@ -22,10 +22,23 @@ export const getUserBasket = (userid) => {
   });
 };
 
+export const addItemToBasket = async (data, userId) => {
+  await basketApi({
+    method: "POST",
+    url: `/basket/${userId}`,
+    data,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  });
+};
+
 export const deleteBasketItemForUser = (basketItemPath, userId) => {
   basketApi({
     method: "DELETE",
-    url: "/basket/" + userId + "/" + basketItemPath,
+    url: `/basket/${userId}/${basketItemPath}`,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",

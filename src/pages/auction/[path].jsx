@@ -5,20 +5,27 @@ import {
   Image,
   Stack,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAuctionDetails } from "../../apis/services/auctionServiceWorker";
+import { addItemToBasket } from "../../apis/services/basketServiceWorker";
+import { fetchUser } from "../../apis/services/userServiceWorker";
 import Navbar from "../../components/navbar/navbar";
 import SliderInput from "../../components/utils/sliderinput";
+import { authStore } from "../../store/zustand";
 export default function AuctionDetails() {
   const router = useRouter();
   const [error, setError] = useState();
+  const userDetails = authStore((state) => state.userDetails);
+  const setUserDetails = authStore((state) => state.setUserDetails);
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
   const [amount, setAmount] = useState(0);
   const { path } = router.query;
+  const toast = useToast();
 
   useEffect(() => {
     if (path) {
@@ -32,6 +39,15 @@ export default function AuctionDetails() {
         }
       });
     }
+    if (!userDetails) {
+      fetchUser().then((result) => {
+        if (result.error) {
+          logout();
+        } else {
+          setUserDetails(result.userDetails);
+        }
+      });
+    }
   }, [path]);
 
   const updateAmount = (value) => {
@@ -39,11 +55,28 @@ export default function AuctionDetails() {
   };
 
   const addToCart = () => {
-    if (amount > 0) {
-      addItem({
-        amount: amount,
-        product: details,
+    if (!userDetails) {
+      toast({
+        title: "Błąd!.",
+        description: "Musisz być zalogowany aby dodać item do koszyka.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
       });
+      return;
+    }
+    if (amount > 0) {
+      addItemToBasket(
+        {
+          basketItems: [
+            {
+              quantity: amount,
+              auctionPath: details.auctionPath,
+            },
+          ],
+        },
+        userDetails.userId
+      );
     }
   };
 
