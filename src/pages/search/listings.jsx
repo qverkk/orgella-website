@@ -4,26 +4,40 @@ import { useEffect, useState } from "react";
 import { findAuctions } from "../../apis/services/auctionServiceWorker";
 import Auction from "../../components/auctions/auction";
 import Navbar from "../../components/navbar/navbar";
+import PageNavigation from "../../components/navigation/pagenavigation";
 
 export default function Listings() {
   const router = useRouter();
 
   const [auctions, setAuctions] = useState();
+  const [maxPages, setMaxPages] = useState();
   const [error, setError] = useState();
-  const { query, category } = router.query;
+  const { query, category, page } = router.query;
+
+  const onPageChange = (number) => {
+    router.push({
+      pathname: "/search/listings",
+      query: {
+        query: query,
+        category: category,
+        page: number,
+      },
+    });
+  };
 
   useEffect(() => {
     if (query && category) {
-      findAuctions(query, category, (result) => {
+      findAuctions(query, category, page || 0, (result) => {
         const { data, status } = result;
         if (status == 200) {
-          setAuctions(data);
+          setAuctions(data.items);
+          setMaxPages(data.maxPages);
         } else {
           setError("Some error occured");
         }
       });
     }
-  }, [query, category]);
+  }, [query, category, page]);
 
   return (
     <>
@@ -44,11 +58,21 @@ export default function Listings() {
           ? auctions.map((auction) => (
               <Auction w="100%" key={auction.auctionPath} data={auction} />
             ))
-          : !error && (
+          : !error &&
+            auctions && (
               <Heading>
                 Brak aukcji dla {query} w kategorii {category}
               </Heading>
             )}
+        {auctions && auctions.length > 0 && (
+          <PageNavigation
+            currentPage={page || 0}
+            maxPages={maxPages}
+            onPageChange={(number) => {
+              onPageChange(number);
+            }}
+          />
+        )}
       </Box>
     </>
   );

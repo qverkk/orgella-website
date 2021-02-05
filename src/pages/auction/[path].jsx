@@ -21,6 +21,7 @@ export default function AuctionDetails() {
   const [error, setError] = useState();
   const userDetails = authStore((state) => state.userDetails);
   const setUserDetails = authStore((state) => state.setUserDetails);
+  const logout = authStore((state) => state.logout);
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
   const [amount, setAmount] = useState(0);

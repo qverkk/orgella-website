@@ -1,12 +1,13 @@
 import { auctionsApi } from "../calls";
 
-export const findAuctions = async (query, category, callback) => {
+export const findAuctions = async (query, category, page, callback) => {
   const response = await auctionsApi({
     method: "GET",
     url: "/auctions/find",
     params: {
       query,
       category,
+      page,
     },
     headers: {
       "Access-Control-Allow-Origin": "*",
