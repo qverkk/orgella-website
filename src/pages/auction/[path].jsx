@@ -98,7 +98,13 @@ export default function AuctionDetails() {
         {details && (
           <Box>
             <Box boxShadow="dark-lg" p="6" rounded="md">
-              <Stack direction="row" p={4}>
+              <Stack
+                direction={{
+                  base: "column",
+                  lg: "row",
+                }}
+                p={4}
+              >
                 <Image
                   alt="{details.title} image"
                   src={`data:image/png;base64,${details.thumbnail}`}
@@ -110,7 +116,7 @@ export default function AuctionDetails() {
                   <Text>
                     Iles gwiazdek {details.reviews.length} ocen produktu
                   </Text>
-                  <Text>{details.price} zł</Text>
+                  <Text>Cena za sztukę: {details.price} zł</Text>
                   <Stack h="100%" justify="end">
                     <VStack boxShadow="outline" p={3}>
                       <Text>Liczba sztuk</Text>

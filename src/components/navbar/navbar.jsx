@@ -124,9 +124,15 @@ export default function Navbar(props) {
             </Flex>
           )}
           <Spacer />
-          <Box>
-            <Box w="150px">
+          <Flex
+            w={{ base: "100%", md: "100%", lg: "150px" }}
+            mt={{ base: "10px", md: "10px", lg: "0" }}
+          >
+            <Box width={{ base: "50%", md: "50%", lg: "50%" }}>
               <Button
+                variant="outline"
+                border="2px"
+                borderColor="cyan.600"
                 onClick={() => {
                   setDisplayProfile(false);
                   onOpen();
@@ -136,8 +142,11 @@ export default function Navbar(props) {
                 Koszyk
               </Button>
             </Box>
-            <Box w="150px">
+            <Box width={{ base: "50%", md: "50%", lg: "50%" }} ml={2}>
               <Button
+                variant="outline"
+                border="2px"
+                borderColor="cyan.600"
                 onClick={() => {
                   setDisplayProfile(true);
                   onOpen();
@@ -159,7 +168,7 @@ export default function Navbar(props) {
                 </DrawerContent>
               </DrawerOverlay>
             </Drawer>
-          </Box>
+          </Flex>
         </Flex>
       </Box>
     </header>

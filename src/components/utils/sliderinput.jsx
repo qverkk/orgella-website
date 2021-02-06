@@ -23,7 +23,7 @@ export default function SliderInput({ callback, details }) {
   return (
     <Flex>
       <NumberInput
-        maxW="100px"
+        maxW={{ base: "100%", lg: "400px" }}
         mr="2rem"
         value={value}
         onChange={handleChange}
@@ -35,18 +35,6 @@ export default function SliderInput({ callback, details }) {
           <NumberDecrementStepper />
         </NumberInputStepper>
       </NumberInput>
-      <Slider
-        flex="1"
-        w={300}
-        value={value}
-        onChange={handleChange}
-        max={details.quantity}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb fontSize="sm" boxSize="32px" children={value} />
-      </Slider>
     </Flex>
   );
 }

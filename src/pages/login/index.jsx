@@ -49,7 +49,7 @@ export default function Login() {
       } else {
         toast({
           title: "Something just fucked up.",
-          description: "Please hold on while we fix the fucking.",
+          description: "Please hold on while we fix the bug.",
           status: "error",
           duration: 9000,
           isClosable: true,

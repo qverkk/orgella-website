@@ -1,11 +1,28 @@
-import { Box, Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  HStack,
+  Image,
+  Text,
+  useDisclosure,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useSWR from "swr";
 import {
   deleteBasketItemForUser,
   getUserBasket,
 } from "../../apis/services/basketServiceWorker";
+import { purchaseItems } from "../../apis/services/ordersServiceWorker";
 import { fetchUser } from "../../apis/services/userServiceWorker";
 import { authStore } from "../../store/zustand";
 import LoggedOutProfile from "../navbar/profile/loggedout/profile-out";
@@ -16,6 +33,10 @@ export default function Basket() {
   const userDetails = authStore((state) => state.userDetails);
   const logout = authStore((state) => state.logout);
   const authenticated = authStore((state) => state.authenticated);
+  const toast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   const { data, error, mutate } = useSWR(
     userDetails ? "/api/users-basket-ws/basket/" + userDetails.userId : null,
@@ -24,6 +45,47 @@ export default function Basket() {
       refreshInterval: 10000,
     }
   );
+
+  const performPurchasingItems = () => {
+    var result = [];
+
+    data.products.forEach((elem) => {
+      result.push({
+        quantity: elem.amount,
+        productPath: elem.product.auctionPath,
+      });
+    });
+
+    purchaseItems(
+      {
+        userId: userDetails.userId,
+        products: result,
+      },
+      userDetails.userId,
+      (result) => {
+        const { data, status } = result;
+        if (status == 200) {
+          toast({
+            title: "Gratulacje!",
+            description: "Udało się zakupić dane produkty!",
+            status: "success",
+            duration: 4000,
+            isClosable: true,
+          });
+          mutate("/api/users-basket-ws/basket/" + userDetails.userId);
+        } else {
+          toast({
+            title: "Uwaga!",
+            description: "Wystąpił jakiś błąd!",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
+      }
+    );
+    onClose();
+  };
 
   useEffect(() => {
     if (!userDetails) {
@@ -96,9 +158,51 @@ export default function Basket() {
     <Box>
       {itemsList}
       <Box mt={5}>Łączna suma: {totalSum} zł</Box>
-      <Button w="100%" colorScheme="green" mt={5}>
+      <Button
+        w="100%"
+        colorScheme="green"
+        mt={5}
+        onClick={totalSum > 0 ? onOpen : null}
+      >
         Kup teraz!
       </Button>
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            Czy na pewno chcesz dokonać zakupu?
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            Czy jesteś pewien, że chcesz dokonać zakupu na kwotę {totalSum} zł.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button
+              colorScheme="red"
+              variant="outline"
+              ref={cancelRef}
+              onClick={onClose}
+            >
+              Nie
+            </Button>
+            <Button
+              colorScheme="green"
+              variant="outline"
+              ml={3}
+              onClick={performPurchasingItems}
+            >
+              Tak
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Box>
   );
 }

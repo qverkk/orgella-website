@@ -15,4 +15,9 @@ const basketApi = axios.create({
   withCredentials: true,
 });
 
-export { usersApi, auctionsApi, basketApi };
+const ordersApi = axios.create({
+  baseURL: "/api/orders-ws",
+  withCredentials: true,
+});
+
+export { usersApi, auctionsApi, basketApi, ordersApi };
