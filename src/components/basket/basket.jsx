@@ -24,7 +24,7 @@ import {
 } from "../../apis/services/basketServiceWorker";
 import { purchaseItems } from "../../apis/services/ordersServiceWorker";
 import { fetchUser } from "../../apis/services/userServiceWorker";
-import { authStore } from "../../store/zustand";
+import { authStore, ordersStore } from "../../store/zustand";
 import LoggedOutProfile from "../navbar/profile/loggedout/profile-out";
 
 export default function Basket() {
@@ -34,6 +34,9 @@ export default function Basket() {
   const logout = authStore((state) => state.logout);
   const authenticated = authStore((state) => state.authenticated);
   const toast = useToast();
+  const setOrdersInformation = ordersStore(
+    (state) => state.setOrdersInformation
+  );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
@@ -65,14 +68,39 @@ export default function Basket() {
       (result) => {
         const { data, status } = result;
         if (status == 200) {
-          toast({
-            title: "Gratulacje!",
-            description: "Udało się zakupić dane produkty!",
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-          });
+          if (data.failedOrders.length > 0 && data.createdItems.length <= 0) {
+            toast({
+              title: "Uwaga!",
+              description:
+                "Nie udało się nic kupić! Zmień ilość produktów w zamówieniu!",
+              status: "error",
+              duration: 4000,
+              isClosable: true,
+            });
+          } else if (
+            data.failedOrders.length > 0 &&
+            data.createdItems.length > 0
+          ) {
+            toast({
+              title: "Ostrożnie!",
+              description: "Udało się zakupić niektóre produkty.",
+              status: "warning",
+              duration: 4000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: "Gratulacje!",
+              description: "Udało się zakupić dane produkty!",
+              status: "success",
+              duration: 4000,
+              isClosable: true,
+            });
+          }
+
+          setOrdersInformation(data);
           mutate("/api/users-basket-ws/basket/" + userDetails.userId);
+          router.push("/orders/summary");
         } else {
           toast({
             title: "Uwaga!",

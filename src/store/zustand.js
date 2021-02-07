@@ -19,3 +19,8 @@ export const authStore = create((set) => ({
     }));
   },
 }));
+
+export const ordersStore = create((set) => ({
+  orders: null,
+  setOrdersInformation: (data) => set((state) => ({ orders: data })),
+}));
