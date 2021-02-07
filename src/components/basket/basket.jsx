@@ -63,6 +63,7 @@ export default function Basket() {
       {
         userId: userDetails.userId,
         products: result,
+        buynow: false,
       },
       userDetails.userId,
       (result) => {

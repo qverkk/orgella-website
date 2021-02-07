@@ -15,8 +15,6 @@ export const getOrdersForUser = async (userId) => {
     validateStatus: () => true,
   });
 
-  console.log(response);
-
   return response.data;
 };
 

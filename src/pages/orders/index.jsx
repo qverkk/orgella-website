@@ -8,6 +8,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -19,6 +20,7 @@ import { authStore } from "../../store/zustand";
 
 export default function Orders() {
   const router = useRouter();
+  const toast = useToast();
   const stateLogout = authStore((state) => state.logout);
   const authenticate = authStore((store) => store.authenticate);
   const userDetails = authStore((store) => store.userDetails);
@@ -44,6 +46,13 @@ export default function Orders() {
     fetchUser().then((result) => {
       if (result.error) {
         stateLogout();
+        toast({
+          title: "Uwaga!",
+          description: "Zaloguj się by zobaczyć zamówienia",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
       } else {
         setUserDetails(result.userDetails);
         authenticate();
