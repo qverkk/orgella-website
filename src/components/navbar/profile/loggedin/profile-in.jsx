@@ -24,6 +24,16 @@ export default function LoggedInProfile({ logout }) {
               >
                 Zamówienia
               </Button>
+              {userDetails.roles.includes("ROLE_SELLER") && (
+                <Button variant="outline" colorScheme="green">
+                  Zarządzaj zamówieniami
+                </Button>
+              )}
+              {userDetails.roles.includes("ROLE_ADMIN") && (
+                <Button variant="outline" colorScheme="green">
+                  Zarządzaj użytkownikami
+                </Button>
+              )}
               <Button variant="outline" colorScheme="green">
                 Ustawienia
               </Button>
