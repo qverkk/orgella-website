@@ -31,6 +31,41 @@ export const getAvailableShippingStatuses = () => {
   });
 };
 
+export const getNonReviewedUserOrders = (userId) => {
+  if (userId == null) {
+    return;
+  }
+
+  ordersApi({
+    method: "GET",
+    url: `/orders/${userId}/nonReviewed`,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  }).then((res) => {
+    if (res.status != 200) {
+      return [];
+    }
+
+    return res.data;
+  });
+};
+
+export const postReview = async (data) => {
+  await ordersApi({
+    method: "POST",
+    url: `orders/create/review`,
+    data,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  });
+};
+
 export const getOrdersMadeBySeller = async (sellerUsername) => {
   if (sellerUsername == null) {
     return;

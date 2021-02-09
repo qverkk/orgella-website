@@ -18,9 +18,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import {
+  addRoleForUsername,
   getAvailableRoles,
   getAvailableUsers,
-  addRoleForUsername,
   removeRoleForUsername,
 } from "../../apis/services/adminServiceWorker";
 import { fetchUser } from "../../apis/services/userServiceWorker";

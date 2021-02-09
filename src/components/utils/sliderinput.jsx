@@ -5,10 +5,6 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 

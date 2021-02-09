@@ -5,12 +5,10 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
-  Image,
   Input,
   InputGroup,
   InputRightAddon,
   Select,
-  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
