@@ -32,3 +32,24 @@ export const getAuctionDetails = async (auctionPath, callback) => {
 
   callback({ data: response.data, status: response.status });
 };
+
+export const createAuction = async (formData, callback) => {
+  const response = await auctionsApi({
+    method: "POST",
+    url: "/auctions",
+    data: formData,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress: (event) => {
+      console.log(
+        `Current progress:`,
+        Math.round((event.loaded * 100) / event.total)
+      );
+    },
+    validateStatus: () => true,
+  });
+
+  callback({ data: response.data, status: response.status });
+};

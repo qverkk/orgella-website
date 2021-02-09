@@ -18,6 +18,10 @@ export default function LoggedInProfile({ logout }) {
     router.push("/admin");
   };
 
+  const goToSellerCreateOrderPage = () => {
+    router.push("/orders/create");
+  };
+
   return (
     <Box>
       {userDetails && (
@@ -39,6 +43,15 @@ export default function LoggedInProfile({ logout }) {
                   onClick={goToSellerOrdersPage}
                 >
                   Zarządzaj zamówieniami
+                </Button>
+              )}
+              {userDetails.roles.includes("ROLE_SELLER") && (
+                <Button
+                  variant="outline"
+                  colorScheme="green"
+                  onClick={goToSellerCreateOrderPage}
+                >
+                  Stwórz ofertę
                 </Button>
               )}
               {userDetails.roles.includes("ROLE_ADMIN") && (
