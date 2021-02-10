@@ -36,14 +36,15 @@ import {
 } from "../../../apis/services/ordersServiceWorker";
 import { fetchUser } from "../../../apis/services/userServiceWorker";
 import Navbar from "../../../components/navbar/navbar";
+import PageNavigation from "../../../components/navigation/pagenavigation";
 import { authStore } from "../../../store/zustand";
 
-function useNonReviewedOrders(userDetails) {
+function useNonReviewedOrders(userDetails, page) {
   const { data, error, mutate } = useSWR(
     userDetails
-      ? `/api/orders-ws/orders/${userDetails.userId}/nonReviewed`
+      ? `/api/orders-ws/orders/${userDetails.userId}/nonReviewed?page=${page}`
       : null,
-    getNonReviewedUserOrders(userDetails ? userDetails.userId : null)
+    getNonReviewedUserOrders(userDetails ? userDetails.userId : null, page)
   );
 
   if (!data) {
@@ -68,14 +69,25 @@ export default function CreateReview() {
   const userDetails = authStore((store) => store.userDetails);
   const setUserDetails = authStore((store) => store.setUserDetails);
   const [redirect, setRedirect] = useState(false);
+  const { page } = router.query;
   const { orders, maxOrderPages, ordersMutate } = useNonReviewedOrders(
-    userDetails
+    userDetails,
+    page || 0
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentReviewOrder, setCurrentReviewOrder] = useState();
 
   const initialRef = useRef();
   const finalRef = useRef();
+
+  const onPageChange = (number) => {
+    router.push({
+      pathname: "/reviews/create",
+      query: {
+        page: number,
+      },
+    });
+  };
 
   const validate = (values) => {
     const errors = {};
@@ -158,6 +170,15 @@ export default function CreateReview() {
                   })}
               </Tbody>
             </Table>
+            {orders && orders.length > 0 && (
+              <PageNavigation
+                currentPage={page || 0}
+                maxPages={maxOrderPages}
+                onPageChange={(number) => {
+                  onPageChange(number);
+                }}
+              />
+            )}
             {currentReviewOrder && (
               <Modal
                 initialFocusRef={initialRef}

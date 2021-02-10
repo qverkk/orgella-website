@@ -22,7 +22,7 @@ export const getAvailableRoles = (admin) => {
   });
 };
 
-export const getAvailableUsers = (admin) => {
+export const getAvailableUsers = (admin, page) => {
   if (!admin) {
     return;
   }
@@ -30,6 +30,9 @@ export const getAvailableUsers = (admin) => {
   usersApi({
     method: "GET",
     url: `/users/users/all`,
+    params: {
+      page,
+    },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",

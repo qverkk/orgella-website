@@ -33,6 +33,45 @@ export const getAuctionDetails = async (auctionPath, callback) => {
   callback({ data: response.data, status: response.status });
 };
 
+export const getAuctionReviews = (display, auctionPath, page) => {
+  if (auctionPath == null || !display) {
+    return;
+  }
+
+  auctionsApi({
+    method: "GET",
+    url: `/auctions/reviews/${auctionPath}`,
+    params: {
+      page,
+    },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  }).then((res) => {
+    if (res.status != 200) {
+      return [];
+    }
+
+    return res.data;
+  });
+};
+
+export const getAuctionReviewsSum = async (auctionPath, callback) => {
+  const response = await auctionsApi({
+    method: "GET",
+    url: "/auctions/reviews/sum/" + auctionPath,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    },
+    validateStatus: () => true,
+  });
+
+  callback({ data: response.data, status: response.status });
+};
+
 export const createAuction = async (formData, callback) => {
   const response = await auctionsApi({
     method: "POST",

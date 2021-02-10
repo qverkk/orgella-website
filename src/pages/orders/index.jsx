@@ -26,12 +26,14 @@ export default function Orders() {
   const userDetails = authStore((store) => store.userDetails);
   const setUserDetails = authStore((store) => store.setUserDetails);
 
-  const { data, error, mutate } = useSWR(
-    userDetails ? "/api/orders-ws/orders/" + userDetails.userId : null,
-    getOrdersForUser(userDetails ? userDetails.userId : null)
-  );
-
   const { page } = router.query;
+
+  const { data, error, mutate } = useSWR(
+    userDetails
+      ? `/api/orders-ws/orders/${userDetails.userId}?page=${page || 0}`
+      : null,
+    getOrdersForUser(userDetails ? userDetails.userId : null, page || 0)
+  );
 
   const onPageChange = (number) => {
     router.push({

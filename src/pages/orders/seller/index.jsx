@@ -28,12 +28,12 @@ import Navbar from "../../../components/navbar/navbar";
 import PageNavigation from "../../../components/navigation/pagenavigation";
 import { authStore } from "../../../store/zustand";
 
-function useSellerOrders(userDetails) {
+function useSellerOrders(userDetails, page) {
   const { data, error, mutate } = useSWR(
     userDetails && userDetails.roles.includes("ROLE_SELLER")
-      ? `/api/orders-ws/orders/${userDetails.username}/all`
+      ? `/api/orders-ws/orders/${userDetails.username}/all?page=${page}`
       : null,
-    getOrdersMadeBySeller(userDetails ? userDetails.username : null)
+    getOrdersMadeBySeller(userDetails ? userDetails.username : null, page)
   );
 
   if (!data) {
@@ -76,10 +76,12 @@ export default function SellerOrders() {
   const userDetails = authStore((store) => store.userDetails);
   const setUserDetails = authStore((store) => store.setUserDetails);
   const [redirect, setRedirect] = useState(false);
-  const { orders, ordersMutate, maxPages } = useSellerOrders(userDetails);
-  const { statuses, statusesMutate } = useAvailableShippingStatuses();
-
   const { page } = router.query;
+  const { orders, ordersMutate, maxPages } = useSellerOrders(
+    userDetails,
+    page || 0
+  );
+  const { statuses, statusesMutate } = useAvailableShippingStatuses();
 
   const onPageChange = (number) => {
     router.push({
@@ -96,7 +98,9 @@ export default function SellerOrders() {
       sellerUsername: userDetails.username,
       orderStatus: status,
     });
-    ordersMutate(`/api/orders-ws/orders/${userDetails.username}/all`);
+    ordersMutate(
+      `/api/orders-ws/orders/${userDetails.username}/all?page=${page || 0}`
+    );
   };
 
   if (!userDetails) {

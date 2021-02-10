@@ -25,6 +25,7 @@ import {
 } from "../../apis/services/adminServiceWorker";
 import { fetchUser } from "../../apis/services/userServiceWorker";
 import Navbar from "../../components/navbar/navbar";
+import PageNavigation from "../../components/navigation/pagenavigation";
 import { authStore } from "../../store/zustand";
 
 function useRoles(userDetails) {
@@ -47,22 +48,27 @@ function useRoles(userDetails) {
   };
 }
 
-function useUsers(userDetails) {
+function useUsers(userDetails, page) {
   const { data, error, mutate } = useSWR(
     userDetails && userDetails.roles.includes("ROLE_ADMIN")
-      ? "/api/users-ws/users/users/all"
+      ? `/api/users-ws/users/users/all?page=${page}`
       : null,
-    getAvailableUsers(userDetails && userDetails.roles.includes("ROLE_ADMIN"))
+    getAvailableUsers(
+      userDetails && userDetails.roles.includes("ROLE_ADMIN"),
+      page
+    )
   );
 
   if (!data) {
     return {
+      usersMaxPage: 1,
       users: [],
     };
   }
 
   return {
     users: data.users,
+    usersMaxPage: data.maxPages,
     usersMutate: mutate,
   };
 }
@@ -76,7 +82,17 @@ export default function Admin() {
   const setUserDetails = authStore((store) => store.setUserDetails);
   const [redirect, setRedirect] = useState(false);
   const { roles, rolesMutate } = useRoles(userDetails);
-  const { users, usersMutate } = useUsers(userDetails);
+  const { page } = router.query;
+  const { users, usersMutate, usersMaxPage } = useUsers(userDetails, page || 0);
+
+  const onPageChange = (number) => {
+    router.push({
+      pathname: "/admin",
+      query: {
+        page: number,
+      },
+    });
+  };
 
   const removeRoleForUser = (role, username) => {
     removeRoleForUsername({
@@ -201,6 +217,13 @@ export default function Admin() {
                   })}
               </Tbody>
             </Table>
+            <PageNavigation
+              currentPage={page || 0}
+              maxPages={usersMaxPage}
+              onPageChange={(number) => {
+                onPageChange(number);
+              }}
+            />
           </Box>
         )}
       </Box>

@@ -6,25 +6,69 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Badge,
   Box,
   Button,
   Heading,
   Image,
   Stack,
+  Tag,
   Text,
   useDisclosure,
   useToast,
   VStack,
 } from "@chakra-ui/react";
+import ReactStars from "react-rating-stars-component";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { getAuctionDetails } from "../../apis/services/auctionServiceWorker";
+import {
+  getAuctionDetails,
+  getAuctionReviews,
+  getAuctionReviewsSum,
+} from "../../apis/services/auctionServiceWorker";
 import { addItemToBasket } from "../../apis/services/basketServiceWorker";
 import { purchaseItems } from "../../apis/services/ordersServiceWorker";
 import { fetchUser } from "../../apis/services/userServiceWorker";
 import Navbar from "../../components/navbar/navbar";
 import SliderInput from "../../components/utils/sliderinput";
 import { authStore, ordersStore } from "../../store/zustand";
+import useSWR from "swr";
+import PageNavigation from "../../components/navigation/pagenavigation";
+
+function useReviews(display, auctionPath, page) {
+  const { data, error, mutate } = useSWR(
+    display
+      ? `/api/auctions-ws/auctions/reviews/${auctionPath}?page=${page}`
+      : null,
+    getAuctionReviews(display, auctionPath, page || 0)
+  );
+
+  if (!data) {
+    return {
+      maxReviewsPages: 1,
+      reviews: [],
+    };
+  }
+
+  return {
+    reviews: data.items,
+    maxReviewsPages: data.maxPages,
+    reviewsMutate: mutate,
+  };
+}
+
+function formatDate(date) {
+  var d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [day, month, year].join("-");
+}
+
 export default function AuctionDetails() {
   const router = useRouter();
   const [error, setError] = useState();
@@ -36,12 +80,26 @@ export default function AuctionDetails() {
   );
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
+  const [reviewsRating, setReviewsRating] = useState();
   const [amount, setAmount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [displayReviews, setDisplayReviews] = useState(false);
   const { path } = router.query;
   const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+
+  const { reviews, maxReviewsPages, reviewsMutate } = useReviews(
+    displayReviews,
+    path,
+    page || 0
+  );
+
+  const onReviewPageChange = (number) => {
+    setPage(number);
+    reviewsMutate(`/api/auctions-ws/auctions/reviews/${number}?page=${number}`);
+  };
 
   const performPurchasingItems = () => {
     if (userDetails == null) {
@@ -128,6 +186,14 @@ export default function AuctionDetails() {
           setError("Some error occured");
         }
       });
+      getAuctionReviewsSum(path, (result) => {
+        const { data, status } = result;
+        if (status == 200) {
+          setReviewsRating(data);
+        } else {
+          setError("Some error occured");
+        }
+      });
     }
     if (!userDetails) {
       fetchUser().then((result) => {
@@ -203,7 +269,16 @@ export default function AuctionDetails() {
                   <Heading>{details.title}</Heading>
                   <Text as="p">Od {details.sellerName}</Text>
                   <Text>
-                    Iles gwiazdek {details.reviews.length} ocen produktu
+                    {reviewsRating && (
+                      <ReactStars
+                        count={5}
+                        size={24}
+                        edit={false}
+                        value={reviewsRating.rating}
+                        activeColor="#ffd700"
+                      />
+                    )}
+                    {reviewsRating ? reviewsRating.count : 0} ocen produktu
                   </Text>
                   <Text>Cena za sztukę: {details.price} zł</Text>
                   <Stack h="100%" justify="end">
@@ -274,6 +349,61 @@ export default function AuctionDetails() {
               <Heading mt={5} size="l">
                 {details.description}
               </Heading>
+            </Box>
+
+            <Box boxShadow="dark-lg" p="6" rounded="md" mt={10}>
+              <Button
+                colorScheme={displayReviews ? "teal" : "green"}
+                onClick={() => {
+                  setDisplayReviews(!displayReviews);
+                }}
+                w="100%"
+              >
+                {displayReviews ? "Ukryj opinie" : "Pokaż opinie"}
+              </Button>
+              {displayReviews && reviews && reviews.length > 0 && (
+                <Box>
+                  {reviews.map((review) => (
+                    <Box
+                      key={review.reviewerUsername + review.date}
+                      p={6}
+                      borderBottom="1px"
+                    >
+                      <Box d="flex">
+                        <Tag
+                          p={2}
+                          mr={3}
+                          borderRadius="full"
+                          px="2"
+                          colorScheme="green"
+                        >
+                          {review.reviewerUsername}
+                        </Tag>
+                        <ReactStars
+                          count={5}
+                          size={24}
+                          edit={false}
+                          value={review.rating}
+                          activeColor="#ffd700"
+                        />
+                      </Box>
+                      <Box pt={2}>
+                        <Text>Dnia {formatDate(review.date)}</Text>
+                      </Box>
+                      <Box pt={3}>
+                        <Text>{review.description}</Text>
+                      </Box>
+                    </Box>
+                  ))}
+                  <PageNavigation
+                    currentPage={page || 0}
+                    maxPages={maxReviewsPages}
+                    onPageChange={(number) => {
+                      onReviewPageChange(number);
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           </Box>
         )}

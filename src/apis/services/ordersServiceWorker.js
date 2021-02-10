@@ -31,7 +31,7 @@ export const getAvailableShippingStatuses = () => {
   });
 };
 
-export const getNonReviewedUserOrders = (userId) => {
+export const getNonReviewedUserOrders = (userId, page) => {
   if (userId == null) {
     return;
   }
@@ -39,6 +39,9 @@ export const getNonReviewedUserOrders = (userId) => {
   ordersApi({
     method: "GET",
     url: `/orders/${userId}/nonReviewed`,
+    params: {
+      page,
+    },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
@@ -66,7 +69,7 @@ export const postReview = async (data) => {
   });
 };
 
-export const getOrdersMadeBySeller = async (sellerUsername) => {
+export const getOrdersMadeBySeller = async (sellerUsername, page) => {
   if (sellerUsername == null) {
     return;
   }
@@ -74,6 +77,9 @@ export const getOrdersMadeBySeller = async (sellerUsername) => {
   const response = await ordersApi({
     method: "GET",
     url: `/orders/${sellerUsername}/all`,
+    params: {
+      page,
+    },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
@@ -84,7 +90,7 @@ export const getOrdersMadeBySeller = async (sellerUsername) => {
   return response.data;
 };
 
-export const getOrdersForUser = async (userId) => {
+export const getOrdersForUser = async (userId, page) => {
   if (userId == null) {
     return;
   }
@@ -92,6 +98,9 @@ export const getOrdersForUser = async (userId) => {
   const response = await ordersApi({
     method: "GET",
     url: `/orders/${userId}`,
+    params: {
+      page,
+    },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
