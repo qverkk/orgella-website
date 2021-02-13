@@ -121,7 +121,7 @@ export default function CreateOrder() {
                   let data = new FormData();
                   data.append("file", file);
                   data.append("title", title);
-                  data.append("quantity", 0);
+                  data.append("quantity", quantity);
                   data.append("price", price);
                   data.append("description", description);
                   data.append("category", category);
