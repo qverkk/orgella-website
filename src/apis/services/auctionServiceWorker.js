@@ -79,7 +79,7 @@ export const createAuction = async (formData, callback) => {
     data: formData,
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "multipart/mixed",
     },
     onUploadProgress: (event) => {
       console.log(
