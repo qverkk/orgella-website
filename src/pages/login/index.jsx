@@ -48,7 +48,7 @@ export default function Login() {
         });
       } else {
         toast({
-          title: "Something just fucked up.",
+          title: "Something just broke.",
           description: "Please hold on while we fix the bug.",
           status: "error",
           duration: 9000,
